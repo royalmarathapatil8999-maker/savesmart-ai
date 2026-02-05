@@ -1,0 +1,8 @@
+{
+  "name": "Save Smart AI",
+  "short_name": "SaveSmart",
+  "start_url": "/savesmart-ai/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a"
+}
