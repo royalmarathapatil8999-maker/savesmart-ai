@@ -3,147 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SaveSmart AI - Cream Theme</title>
+<title>SaveSmart AI - Personal Finance</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* BASE */
-body {
-    margin:0;
-    padding:0;
-    font-family:sans-serif;
-    background: linear-gradient(135deg,#FFF8E7,#FFECD1);
-    color: #333;
+:root {
+  --primary: #FFCFA1; /* cream theme */
+  --primary-dark: #FFD9B3;
+  --primary-light: #FFF2E0;
+  --secondary: #FF6B9D;
+  --success: #00D9A3;
+  --danger: #FF6B6B;
+  --dark: #0A0E27;
+  --light: #FDF7F0;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --glass-bg: rgba(255,255,255,0.6);
+  --glass-border: rgba(0,0,0,0.1);
 }
-.page {display:none; opacity:0; transition:opacity 0.5s;}
-.page.active {display:block; opacity:1;}
-.container {padding-top:80px; text-align:center;}
-h1,h2,h3,p{margin:0.5rem 0;}
 
-/* BUTTONS */
-.btn{padding:0.8rem 1.5rem;margin:0.5rem;border:none;border-radius:10px;cursor:pointer; transition:0.3s;}
-.btn-primary{background: linear-gradient(135deg,#FFA94D,#FF7A00); color:#fff;}
-.btn-primary:hover{transform:translateY(-2px); box-shadow:0 4px 15px rgba(255,122,0,0.4);}
-.btn-secondary{background:#D8CFC4;color:#333;}
-.btn-secondary:hover{background:#CFC2B3;}
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: var(--text-primary);
+  margin:0; padding:0;
+}
 
-/* INPUT */
-input{padding:0.7rem 1rem;border-radius:8px;border:1px solid #ccc;background:#fff;color:#333;margin-bottom:1rem;width:90%;}
-input:focus{outline:none;border-color:#FFA94D; box-shadow:0 0 10px rgba(255,122,0,0.2);}
+.container { max-width: 1000px; margin:auto; padding:20px; }
 
-/* DASHBOARD */
-.dashboard-content{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-top:1rem;}
-.stat-card{background:#fff;padding:1rem;border-radius:12px;width:250px;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
-.chart-container{height:200px;}
-.chat-panel{background:#fff;padding:1rem;border-radius:12px;width:300px;height:350px;display:flex;flex-direction:column;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
-.chat-messages{flex:1;overflow-y:auto;margin-bottom:0.5rem;}
-.message{padding:0.5rem 0.7rem;border-radius:10px;margin:0.3rem 0;}
-.message.user{background:#FFA94D;color:#fff;text-align:right;}
-.message.ai{background:#FFE0B2;text-align:left;}
-.chat-input{display:flex;gap:0.5rem;}
-.chat-input input{flex:1;}
+button {
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
 
-/* PAGE TRANSITIONS */
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);}}
+.btn-primary { background: var(--primary-dark); color:#fff; }
+.btn-primary:hover { background: var(--primary); }
+
+.btn-secondary { background: var(--glass-bg); border:1px solid var(--glass-border); color:#333; }
+.btn-secondary:hover { background: var(--primary-light); }
+
+.page { display:none; }
+.page.active { display:block; }
+
+/* simple card */
+.card { background: var(--glass-bg); padding:20px; border-radius:15px; margin-bottom:20px; }
+
+input[type=text], input[type=password] {
+  width:100%;
+  padding:10px;
+  margin:5px 0 15px;
+  border-radius:10px;
+  border:1px solid var(--glass-border);
+}
+
+/* Chat */
+.chat-box { background: var(--glass-bg); padding:10px; border-radius:10px; height:200px; overflow-y:auto; margin-bottom:10px; }
+
+/* Stats chart */
+.chart-container { background: var(--glass-bg); padding:20px; border-radius:15px; margin-bottom:20px; }
+
+/* Action buttons */
+.actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.actions button { flex:1; }
+
+/* Animated background glows */
+.bg-glow {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-1 { background: var(--primary); top:-50%; left:-10%; animation: float 15s ease-in-out infinite; }
+.glow-2 { background: var(--secondary); bottom:-30%; right:-5%; animation: float 20s ease-in-out infinite reverse; }
+
+@keyframes float {
+  0%,100%{transform:translate(0,0);}
+  50%{transform:translate(50px,50px);}
+}
 </style>
 </head>
 <body>
 
+<div class="bg-glow glow-1"></div>
+<div class="bg-glow glow-2"></div>
+
 <div class="container">
-
-<!-- LANDING -->
-<section id="landing" class="page active">
-  <h1>Welcome to SaveSmart AI</h1>
-  <p>Manage your finances smartly!</p>
-  <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
-</section>
-
-<!-- LOGIN -->
-<section id="login" class="page">
-  <h2>Login</h2>
-  <form id="loginForm">
-    <input type="email" placeholder="Email" required><br>
-    <input type="password" placeholder="Password" required><br>
-    <button class="btn btn-primary" type="submit">Login</button>
-  </form>
-</section>
-
-<!-- DASHBOARD -->
-<section id="dashboard" class="page">
-  <h2>Dashboard</h2>
-  <div class="dashboard-content">
-    <div class="stat-card">
-      <h3>Total Savings</h3>
-      <div class="chart-container">
-        <canvas id="savingsChart"></canvas>
-      </div>
-    </div>
-    <div class="stat-card">
-      <h3>Monthly Income</h3>
-      <p>$12,345</p>
-    </div>
-    <div class="stat-card">
-      <h3>Monthly Expenses</h3>
-      <p>$8,765</p>
-    </div>
-    <div class="chat-panel">
-      <div class="chat-messages" id="chatMessages"></div>
-      <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Ask me...">
-        <button class="btn btn-primary" id="sendBtn">Send</button>
-      </div>
-    </div>
+  <!-- Landing Page -->
+  <div id="landing" class="page active">
+    <h1>Welcome to SaveSmart AI</h1>
+    <p>Your personal finance assistant</p>
+    <button class="btn btn-primary" onclick="gotoPage('login')">Login</button>
+    <button class="btn btn-secondary" onclick="gotoPage('dashboard')">Get Started</button>
   </div>
-</section>
 
+  <!-- Login Page -->
+  <div id="login" class="page">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn btn-primary" onclick="login()">Login</button>
+    <button class="btn btn-secondary" onclick="gotoPage('landing')">Back</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="page">
+    <h2>Dashboard</h2>
+    
+    <!-- Stats cards -->
+    <div class="card">
+      <h3>Statistics</h3>
+      <p>Total Savings: $5000</p>
+      <p>Monthly Budget: $1500</p>
+      <p>Expenses: $800</p>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="expensesChart"></canvas>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-primary" onclick="alert('Add Expense clicked')">Add Expense</button>
+      <button class="btn btn-primary" onclick="alert('Add Income clicked')">Add Income</button>
+      <button class="btn btn-secondary" onclick="alert('Generate Report clicked')">Generate Report</button>
+    </div>
+
+    <!-- Chat -->
+    <div class="card chat-card">
+      <h3>Chat with AI</h3>
+      <div id="chatBox" class="chat-box"></div>
+      <input type="text" id="chatInput" placeholder="Type message">
+      <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+    </div>
+
+    <button class="btn btn-secondary" onclick="gotoPage('landing')">Logout</button>
+  </div>
 </div>
 
 <script>
-// PAGE SWITCH
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+function gotoPage(pageId){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
 }
-document.getElementById('getStartedBtn').addEventListener('click',()=>showPage('login'));
-document.getElementById('loginForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  showPage('dashboard');
-});
 
-// CHART
-const ctx=document.getElementById('savingsChart').getContext('2d');
-new Chart(ctx,{
-  type:'line',
-  data:{
-    labels:['Jan','Feb','Mar','Apr','May','Jun'],
-    datasets:[{
-      label:'Savings',
-      data:[5000,7000,8000,10000,12000,12345],
-      borderColor:'#FF7A00',
-      backgroundColor:'rgba(255,122,0,0.2)',
-      fill:true,
-      tension:0.4
+function login(){
+  const user = document.getElementById('username').value;
+  const pass = document.getElementById('password').value;
+  if(user && pass){ gotoPage('dashboard'); }
+  else{ alert('Enter username and password'); }
+}
+
+function sendMessage(){
+  const input = document.getElementById('chatInput');
+  if(input.value.trim()==='') return;
+  const chatBox = document.getElementById('chatBox');
+  const msgDiv = document.createElement('div');
+  msgDiv.textContent = 'You: ' + input.value;
+  chatBox.appendChild(msgDiv);
+  setTimeout(()=>{ 
+    const aiDiv = document.createElement('div');
+    aiDiv.textContent = 'AI: I understand!'; 
+    chatBox.appendChild(aiDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  },500);
+  input.value='';
+}
+
+// Chart.js Example
+const ctx = document.getElementById('expensesChart').getContext('2d');
+const expensesChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+    datasets: [{
+      label:'Expenses ($)',
+      data:[500,400,600,700,550,650],
+      backgroundColor: 'rgba(255, 199, 161,0.7)'
     }]
   },
-  options:{responsive:true,plugins:{legend:{display:false}}}
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true}}
+  }
 });
-
-// CHAT
-const chatInput=document.getElementById('chatInput');
-document.getElementById('sendBtn').addEventListener('click',sendMsg);
-chatInput.addEventListener('keypress',function(e){if(e.key==='Enter'){sendMsg();}});
-function sendMsg(){
-  const text=chatInput.value.trim(); if(!text)return;
-  const chat=document.getElementById('chatMessages');
-  const userMsg=document.createElement('div'); userMsg.className='message user'; userMsg.innerText=text;
-  chat.appendChild(userMsg);
-  chatInput.value='';
-  chat.scrollTop=chat.scrollHeight;
-  const typing=document.createElement('div'); typing.className='message ai'; typing.innerText='AI is typing...'; chat.appendChild(typing); chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{
-    typing.innerText=`AI: I understood "${text}"`;
-    chat.scrollTop=chat.scrollHeight;
-  },700);
-}
 </script>
 
 </body>
