@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SaveSmart AI Ultimate PWA</title>
+<title>SaveSmart AI Demo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b0e14">
-<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter;}
@@ -81,7 +80,7 @@ input{width:100%;padding:12px;border-radius:12px;border:none;margin-bottom:12px;
   <div class="dashboard">
     <div class="panel">
       <h1>💸 SaveSmart AI</h1>
-      <p>Ultimate Next-Level AI Finance Dashboard</p>
+      <p>Unbeatable Next-Level AI Finance Dashboard</p>
 
       <!-- Status Cards -->
       <div class="status-card"><b>Monthly Income:</b> ₹50,000
@@ -126,8 +125,6 @@ input{width:100%;padding:12px;border-radius:12px;border:none;margin-bottom:12px;
   </div>
 </div>
 
-<audio id="alertSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
-
 <script>
 const landing=document.getElementById("landing");
 const login=document.getElementById("login");
@@ -136,7 +133,6 @@ const msgs=document.getElementById("msgs");
 const text=document.getElementById("text");
 const alerts=[document.getElementById("alert1"),document.getElementById("alert2"),document.getElementById("alert3")];
 const bars=document.querySelectorAll(".bar");
-const sound=document.getElementById("alertSound");
 
 function goLogin(){landing.classList.add("hidden");login.classList.remove("hidden");}
 function goDashboard(){login.classList.add("hidden");dashboard.classList.remove("hidden");animateBars();rotateAlerts();animateBarsDynamic();}
@@ -180,14 +176,8 @@ function animateBarsDynamic(){
 function rotateAlerts(){let i=0;setInterval(()=>{
   alerts.forEach(a=>a.classList.remove("show"));
   alerts[i].classList.add("show");
-  sound.play();
   i=(i+1)%alerts.length;
 },5000);}
-
-// PWA Registration
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(()=>console.log("Service Worker Registered"));
-}
 </script>
 
 </body>
