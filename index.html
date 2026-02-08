@@ -2,208 +2,150 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SaveSmart AI</title>
+<title>SaveSmart AI Demo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{
-  min-height:100vh;
-  background:#0b0e14;
-  color:#fff;
-  overflow:hidden;
-}
-.glow{
-  position:absolute;
-  width:400px;height:400px;
-  background:radial-gradient(circle,#1f7cff55,transparent 70%);
-  top:-150px;left:-150px;
-}
-.glow.r{bottom:-150px;right:-150px;top:auto;left:auto}
+body{min-height:100vh;background:#0b0e14;color:#fff;overflow:hidden;display:flex;justify-content:center;align-items:center;}
+.glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,#1f7cff55,transparent 70%);top:-150px;left:-150px;animation:float1 12s infinite alternate;}
+.glow.r{bottom:-150px;right:-150px;top:auto;left:auto;animation:float2 15s infinite alternate;}
+@keyframes float1{0%{transform:translate(0,0)}100%{transform:translate(100px,120px)}}
+@keyframes float2{0%{transform:translate(0,0)}100%{transform:translate(-120px,-100px)}}
 
-.section{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:.6s;
+.dashboard{
+  width:95%;
+  max-width:960px;
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:20px;
+  z-index:10;
 }
-.hidden{opacity:0;pointer-events:none;transform:scale(1.04)}
 
-.card{
-  width:92%;max-width:460px;
-  background:rgba(255,255,255,.06);
-  backdrop-filter:blur(22px);
+.panel{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(20px);
   border-radius:22px;
-  padding:28px;
-  box-shadow:0 30px 90px rgba(0,0,0,.7);
+  padding:24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
 }
 
-h1{font-size:1.9rem;margin-bottom:6px}
+h1{font-size:1.8rem;margin-bottom:8px}
 p{opacity:.75;font-size:.95rem;margin-bottom:20px}
 
-button{
-  width:100%;padding:14px;
-  border:none;border-radius:14px;
-  background:#1f7cff;color:#fff;
-  font-weight:600;cursor:pointer;
-}
-button.secondary{background:rgba(255,255,255,.12)}
-button + button{margin-top:10px}
-
-input{
-  width:100%;padding:14px;
-  border-radius:14px;border:none;
-  margin-bottom:12px;outline:none;
-}
-
-/* chat */
-.chat{height:82vh;display:flex;flex-direction:column}
-.messages{flex:1;overflow-y:auto}
-.msg{
-  max-width:80%;
-  padding:12px 14px;
-  border-radius:14px;
-  margin-bottom:10px;
-  animation:pop .25s ease;
-}
-@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1}}
-.bot{background:rgba(255,255,255,.14)}
-.user{
-  background:#1f7cff;
-  align-self:flex-end;
-}
-
-.chips{
-  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px
-}
-.chips span{
-  padding:8px 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,.12);
-  font-size:.8rem;
-  cursor:pointer;
-}
-
-.cards{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin:10px 0;
-}
-.stat{
+.status-card{
   background:rgba(255,255,255,.1);
   border-radius:14px;
   padding:14px;
-  font-size:.85rem;
+  margin-bottom:12px;
 }
+
+.quick-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:12px;
+}
+.quick-chips button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  color:#fff;
+  cursor:pointer;
+  font-weight:600;
+  transition:.3s;
+}
+.quick-chips button:hover{transform:scale(1.05);}
+
+.chat{
+  background:rgba(255,255,255,.08);
+  border-radius:14px;
+  padding:12px;
+  height:50vh;
+  display:flex;
+  flex-direction:column;
+}
+.messages{flex:1;overflow-y:auto;margin-bottom:8px;}
+.msg{padding:10px 14px;border-radius:14px;margin-bottom:8px;animation:pop .25s ease;}
+@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1}}
+.bot{background:rgba(255,255,255,.14)}
+.user{background:#1f7cff;align-self:flex-end;color:#fff;}
+input{padding:10px;border-radius:12px;border:none;outline:none;width:100%;margin-top:6px;}
 </style>
 </head>
-
 <body>
+
 <div class="glow"></div>
 <div class="glow r"></div>
 
-<!-- LANDING -->
-<div id="landing" class="section">
-  <div class="card">
-    <h1>SaveSmart AI</h1>
-    <p>Your personal finance brain.</p>
-    <button onclick="goOnboard()">Start Demo</button>
-  </div>
-</div>
+<div class="dashboard">
+  <!-- LEFT PANEL -->
+  <div class="panel">
+    <h1>💸 SaveSmart AI</h1>
+    <p>Personal AI Finance Dashboard (Demo Mode)</p>
+    <div class="status-card"><b>Monthly Income:</b> ₹50,000</div>
+    <div class="status-card"><b>Current Savings:</b> ₹12,500</div>
+    <div class="status-card"><b>Goal:</b> Bike in 6 months</div>
 
-<!-- ONBOARD -->
-<div id="onboard" class="section hidden">
-  <div class="card">
-    <h1>Let’s personalize 🤖</h1>
-    <p>AI adapts to you</p>
-    <input placeholder="Monthly income (₹)">
-    <input placeholder="Main goal (bike, savings, trip)">
-    <button onclick="goChat()">Continue</button>
-  </div>
-</div>
-
-<!-- CHAT -->
-<div id="chat" class="section hidden">
-  <div class="card chat">
-    <h1>SaveSmart AI</h1>
-
-    <div class="cards">
-      <div class="stat">💰 Monthly Budget<br><b>₹24,000</b></div>
-      <div class="stat">📈 Potential Savings<br><b>₹6,200</b></div>
+    <div class="quick-chips">
+      <button onclick="quick('Optimize my budget')">Budget</button>
+      <button onclick="quick('Savings Tips')">Save More</button>
+      <button onclick="quick('Investment Plan')">Invest</button>
+      <button onclick="quick('Pro Unlock')">Pro</button>
     </div>
+  </div>
 
-    <div class="chips">
-      <span onclick="quick('Create my budget')">Budget</span>
-      <span onclick="quick('How can I save more?')">Save More</span>
-      <span onclick="quick('Investment plan')">Invest</span>
-      <span onclick="quick('Upgrade to Pro')">Pro</span>
-    </div>
-
+  <!-- RIGHT PANEL -->
+  <div class="panel chat">
+    <h1>🤖 AI Advisor</h1>
     <div class="messages" id="msgs">
-      <div class="msg bot">Hi! I’ve analyzed your profile. Ask anything.</div>
+      <div class="msg bot">Hello! I’m your finance AI. Ask me anything 💰</div>
     </div>
-
-    <input id="text" placeholder="Ask about money..." onkeydown="if(event.key==='Enter')send()">
+    <input id="text" placeholder="Type your query..." onkeydown="if(event.key==='Enter')send()">
   </div>
 </div>
 
 <script>
-const landing=document.getElementById("landing");
-const onboard=document.getElementById("onboard");
-const chat=document.getElementById("chat");
 const msgs=document.getElementById("msgs");
 const text=document.getElementById("text");
 
-function goOnboard(){
-  landing.classList.add("hidden");
-  onboard.classList.remove("hidden");
-}
-function goChat(){
-  onboard.classList.add("hidden");
-  chat.classList.remove("hidden");
-  fakeAI("Based on your income, I’ve created a smart saving plan.");
-}
-
+function quick(t){add(t,'user');thinking();}
 function send(){
   if(!text.value.trim())return;
-  add(text.value,"user");
-  text.value="";
-  think();
-}
-function quick(t){
-  add(t,"user");
-  think();
+  add(text.value,'user');
+  text.value='';
+  thinking();
 }
 
-function think(){
-  let t=document.createElement("div");
-  t.className="msg bot";
-  t.innerText="Analyzing...";
+function thinking(){
+  const t=document.createElement('div');
+  t.className='msg bot';
+  t.innerText='Analyzing...';
   msgs.appendChild(t);
   msgs.scrollTop=msgs.scrollHeight;
-  setTimeout(()=>{
-    t.innerText=reply();
-  },900);
+  setTimeout(()=>{t.innerText=reply()},900);
 }
 
 function reply(){
   const r=[
-    "You can save ₹5,000/month by optimizing food & transport.",
-    "A 12-month SIP could grow your savings steadily.",
-    "I recommend a 50-30-20 budget for you.",
-    "Upgrade to Pro to unlock detailed analytics."
+    "You can save ₹5,500/month by adjusting food & transport.",
+    "Investing ₹2,000/month in SIP could grow your wealth.",
+    "Follow 50-30-20 budgeting for better savings.",
+    "Upgrade to Pro to unlock full analytics dashboard."
   ];
   return r[Math.floor(Math.random()*r.length)];
 }
 
 function add(t,c){
-  let d=document.createElement("div");
-  d.className="msg "+c;
+  const d=document.createElement('div');
+  d.className='msg '+c;
   d.innerText=t;
   msgs.appendChild(d);
   msgs.scrollTop=msgs.scrollHeight;
 }
 </script>
+
 </body>
 </html>
