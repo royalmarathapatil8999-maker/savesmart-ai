@@ -1,156 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SaveSmart AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>SaveSmart AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
-    body {
-      height: 100vh;
-      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-    }
+body{
+  min-height:100vh;
+  background:#050505;
+  overflow:hidden;
+  color:white;
+}
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+/* BLOBS */
+.blob{
+  position:absolute;
+  width:300px;
+  height:300px;
+  background:linear-gradient(45deg,#00c6ff,#0072ff);
+  filter:blur(120px);
+  animation:move 12s infinite alternate;
+}
+.blob.one{top:-100px;left:-100px}
+.blob.two{bottom:-120px;right:-120px;animation-delay:3s}
 
-    .app {
-      width: 100%;
-      max-width: 420px;
-      height: 90vh;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      overflow: hidden;
-    }
+@keyframes move{
+  0%{transform:translate(0,0)}
+  100%{transform:translate(200px,150px)}
+}
 
-    header {
-      padding: 18px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.2rem;
-      background: rgba(255,255,255,0.1);
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
+/* LANDING */
+.section{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:opacity .6s,transform .6s;
+}
+.hidden{
+  opacity:0;
+  pointer-events:none;
+  transform:scale(1.05);
+}
 
-    .messages {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-    }
+.card{
+  width:90%;
+  max-width:420px;
+  padding:30px;
+  border-radius:22px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(18px);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  text-align:center;
+}
 
-    .msg {
-      max-width: 80%;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      border-radius: 14px;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
+h1{
+  font-size:1.8rem;
+  margin-bottom:10px;
+}
+p{
+  font-size:.95rem;
+  opacity:.85;
+  margin-bottom:25px;
+}
 
-    .bot {
-      background: rgba(255,255,255,0.15);
-      align-self: flex-start;
-    }
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-size:1rem;
+  font-weight:600;
+  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+button:hover{transform:scale(1.05)}
 
-    .user {
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      align-self: flex-end;
-    }
+input{
+  width:100%;
+  padding:14px;
+  margin-bottom:14px;
+  border-radius:14px;
+  border:none;
+  outline:none;
+}
 
-    footer {
-      display: flex;
-      padding: 12px;
-      gap: 10px;
-      background: rgba(255,255,255,0.08);
-    }
-
-    input {
-      flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      font-size: 0.9rem;
-    }
-
-    button {
-      padding: 12px 18px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      color: white;
-      font-weight: 600;
-      transition: transform 0.2s ease;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-    }
-  </style>
+/* CHAT */
+.chat{
+  display:flex;
+  flex-direction:column;
+  height:80vh;
+}
+.messages{
+  flex:1;
+  overflow-y:auto;
+  margin-bottom:10px;
+}
+.msg{
+  padding:12px 14px;
+  border-radius:14px;
+  margin-bottom:10px;
+  max-width:80%;
+}
+.bot{background:rgba(255,255,255,.15)}
+.user{
+  background:linear-gradient(135deg,#00c6ff,#0072ff);
+  align-self:flex-end;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="app">
-    <header>💸 SaveSmart AI</header>
+<div class="blob one"></div>
+<div class="blob two"></div>
 
-    <div class="messages" id="messages">
-      <div class="msg bot">Hi 👋 I’m SaveSmart AI. Ask me how to save money!</div>
-    </div>
-
-    <footer>
-      <input id="input" placeholder="Type your message..." />
-      <button onclick="send()">Send</button>
-    </footer>
+<!-- LANDING -->
+<div id="landing" class="section">
+  <div class="card">
+    <h1>💸 SaveSmart AI</h1>
+    <p>Your personal AI to save money, track spending & build wealth.</p>
+    <button onclick="goLogin()">Get Started Free</button>
   </div>
+</div>
 
-  <script>
-    const messages = document.getElementById('messages');
-    const input = document.getElementById('input');
+<!-- LOGIN -->
+<div id="login" class="section hidden">
+  <div class="card">
+    <h1>Welcome Back 👋</h1>
+    <p>Login to continue</p>
+    <input placeholder="Email">
+    <input placeholder="Password" type="password">
+    <button onclick="goChat()">Login</button>
+  </div>
+</div>
 
-    function send() {
-      const text = input.value.trim();
-      if (!text) return;
+<!-- CHAT -->
+<div id="chat" class="section hidden">
+  <div class="card chat">
+    <h1>🤖 SaveSmart AI</h1>
+    <div class="messages" id="msgs">
+      <div class="msg bot">Hi! Ask me anything about saving money 💰</div>
+    </div>
+    <input id="text" placeholder="Type message..." onkeydown="if(event.key==='Enter')send()">
+  </div>
+</div>
 
-      addMessage(text, 'user');
-      input.value = '';
+<script>
+const landing=document.getElementById('landing');
+const login=document.getElementById('login');
+const chat=document.getElementById('chat');
+const msgs=document.getElementById('msgs');
+const text=document.getElementById('text');
 
-      setTimeout(() => {
-        addMessage("I'm learning 😄 Real AI coming soon!", 'bot');
-      }, 700);
-    }
-
-    function addMessage(text, type) {
-      const div = document.createElement('div');
-      div.className = 'msg ' + type;
-      div.innerText = text;
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
-    }
-  </script>
+function goLogin(){
+  landing.classList.add('hidden');
+  login.classList.remove('hidden');
+}
+function goChat(){
+  login.classList.add('hidden');
+  chat.classList.remove('hidden');
+}
+function send(){
+  if(!text.value.trim())return;
+  add(text.value,'user');
+  text.value='';
+  setTimeout(()=>add("Real AI coming soon 😄",'bot'),700);
+}
+function add(t,c){
+  const d=document.createElement('div');
+  d.className='msg '+c;
+  d.innerText=t;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+</script>
 
 </body>
-</html>
+  </html>
