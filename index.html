@@ -2,77 +2,53 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SaveSmart AI Demo</title>
+<title>SaveSmart AI Ultimate PWA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0e14">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{min-height:100vh;background:#0b0e14;color:#fff;overflow:hidden;display:flex;justify-content:center;align-items:center;}
-.glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,#1f7cff55,transparent 70%);top:-150px;left:-150px;animation:float1 12s infinite alternate;}
-.glow.r{bottom:-150px;right:-150px;top:auto;left:auto;animation:float2 15s infinite alternate;}
-@keyframes float1{0%{transform:translate(0,0)}100%{transform:translate(100px,120px)}}
-@keyframes float2{0%{transform:translate(0,0)}100%{transform:translate(-120px,-100px)}}
-
-.dashboard{
-  width:95%;
-  max-width:960px;
-  display:grid;
-  grid-template-columns:1fr 2fr;
-  gap:20px;
-  z-index:10;
-}
-
-.panel{
-  background:rgba(255,255,255,.05);
-  backdrop-filter:blur(20px);
-  border-radius:22px;
-  padding:24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
-}
-
-h1{font-size:1.8rem;margin-bottom:8px}
-p{opacity:.75;font-size:.95rem;margin-bottom:20px}
-
-.status-card{
-  background:rgba(255,255,255,.1);
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-}
-
-.quick-chips{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-bottom:12px;
-}
-.quick-chips button{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:999px;
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
-  color:#fff;
-  cursor:pointer;
-  font-weight:600;
-  transition:.3s;
-}
-.quick-chips button:hover{transform:scale(1.05);}
-
-.chat{
-  background:rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:12px;
-  height:50vh;
-  display:flex;
-  flex-direction:column;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter;}
+body{min-height:100vh;background:#0b0e14;color:#fff;overflow:hidden;position:relative;}
+.glow{position:absolute;width:450px;height:450px;background:radial-gradient(circle,#00c6ff44,transparent 70%);top:-200px;left:-200px;animation:float1 12s infinite alternate;}
+.glow.r{bottom:-200px;right:-200px;top:auto;left:auto;animation:float2 15s infinite alternate;}
+@keyframes float1{0%{transform:translate(0,0)}100%{transform:translate(120px,140px)}}
+@keyframes float2{0%{transform:translate(0,0)}100%{transform:translate(-140px,-120px)}}
+.section{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;transition:.5s;}
+.hidden{opacity:0;pointer-events:none;transform:scale(1.03);}
+.card{width:90%;max-width:450px;background:rgba(255,255,255,.05);backdrop-filter:blur(25px);border-radius:25px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center;transition:.5s;}
+.card:hover{box-shadow:0 25px 80px rgba(0,0,0,.7);}
+.card h1{font-size:2rem;margin-bottom:10px;}
+.card p{opacity:.75;font-size:1rem;margin-bottom:20px;}
+button{width:100%;padding:14px;border:none;border-radius:14px;background:#1f7cff;color:#fff;font-weight:600;cursor:pointer;transition:.3s;}
+button.secondary{background:rgba(255,255,255,.12);margin-top:10px;}
+button:hover{transform:scale(1.05);}
+input{width:100%;padding:12px;border-radius:12px;border:none;margin-bottom:12px;outline:none;}
+.dashboard{display:grid;grid-template-columns:1fr 2fr;gap:20px;width:95%;max-width:960px;}
+.panel{background:rgba(255,255,255,.05);backdrop-filter:blur(25px);border-radius:25px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);transition:.5s;}
+.panel:hover{box-shadow:0 25px 80px rgba(0,0,0,.7);}
+.status-card{background:rgba(255,255,255,.1);border-radius:14px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;}
+.progress-bar-bg{width:100%;height:14px;background:rgba(255,255,255,.15);border-radius:12px;margin-top:6px;}
+.progress-bar-fill{height:100%;border-radius:12px;background:linear-gradient(135deg,#00c6ff,#0072ff);width:0;transition:height 1s ease;}
+.quick-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
+.quick-chips button{flex:1;padding:10px;border-radius:999px;background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;cursor:pointer;font-weight:600;transition:.3s;}
+.chat{background:rgba(255,255,255,.08);border-radius:14px;padding:12px;height:50vh;display:flex;flex-direction:column;}
 .messages{flex:1;overflow-y:auto;margin-bottom:8px;}
 .msg{padding:10px 14px;border-radius:14px;margin-bottom:8px;animation:pop .25s ease;}
 @keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1}}
-.bot{background:rgba(255,255,255,.14)}
+.bot{background:rgba(255,255,255,.14);}
 .user{background:#1f7cff;align-self:flex-end;color:#fff;}
-input{padding:10px;border-radius:12px;border:none;outline:none;width:100%;margin-top:6px;}
+.chart{background:rgba(255,255,255,.1);border-radius:14px;padding:12px;height:150px;margin-top:12px;position:relative;overflow:hidden;}
+.bar{height:12px;background:#1f7cff;border-radius:8px;position:absolute;bottom:0;transition:height 1s ease;}
+.alert{background:rgba(255,0,0,.15);padding:10px;border-radius:12px;margin-bottom:10px;opacity:0;transition:.5s;display:flex;align-items:center;justify-content:space-between;}
+.alert.show{opacity:1;}
+.alert span{margin-left:10px;}
+.typing-dots{display:inline-block;width:24px;height:8px;}
+.typing-dots span{display:inline-block;width:6px;height:6px;margin:0 2px;background:#fff;border-radius:50%;animation:blink 1.4s infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+@media(max-width:768px){.dashboard{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -80,70 +56,137 @@ input{padding:10px;border-radius:12px;border:none;outline:none;width:100%;margin
 <div class="glow"></div>
 <div class="glow r"></div>
 
-<div class="dashboard">
-  <!-- LEFT PANEL -->
-  <div class="panel">
-    <h1>💸 SaveSmart AI</h1>
-    <p>Personal AI Finance Dashboard (Demo Mode)</p>
-    <div class="status-card"><b>Monthly Income:</b> ₹50,000</div>
-    <div class="status-card"><b>Current Savings:</b> ₹12,500</div>
-    <div class="status-card"><b>Goal:</b> Bike in 6 months</div>
-
-    <div class="quick-chips">
-      <button onclick="quick('Optimize my budget')">Budget</button>
-      <button onclick="quick('Savings Tips')">Save More</button>
-      <button onclick="quick('Investment Plan')">Invest</button>
-      <button onclick="quick('Pro Unlock')">Pro</button>
-    </div>
-  </div>
-
-  <!-- RIGHT PANEL -->
-  <div class="panel chat">
-    <h1>🤖 AI Advisor</h1>
-    <div class="messages" id="msgs">
-      <div class="msg bot">Hello! I’m your finance AI. Ask me anything 💰</div>
-    </div>
-    <input id="text" placeholder="Type your query..." onkeydown="if(event.key==='Enter')send()">
+<!-- LANDING PAGE -->
+<div id="landing" class="section">
+  <div class="card">
+    <h1>Welcome to SaveSmart AI</h1>
+    <p>Your personal AI finance assistant. Plan, save & invest smarter.</p>
+    <button onclick="goLogin()">Get Started</button>
   </div>
 </div>
 
+<!-- LOGIN PAGE -->
+<div id="login" class="section hidden">
+  <div class="card">
+    <h1>Login to Demo</h1>
+    <input type="email" placeholder="Email (Demo)">
+    <input type="password" placeholder="Password (Demo)">
+    <button onclick="goDashboard()">Continue</button>
+    <button class="secondary" onclick="goDashboard()">Continue as Guest</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="section hidden">
+  <div class="dashboard">
+    <div class="panel">
+      <h1>💸 SaveSmart AI</h1>
+      <p>Ultimate Next-Level AI Finance Dashboard</p>
+
+      <!-- Status Cards -->
+      <div class="status-card"><b>Monthly Income:</b> ₹50,000
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="incomeBar"></div></div>
+      </div>
+      <div class="status-card"><b>Current Savings:</b> ₹12,500
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="savingsBar"></div></div>
+      </div>
+      <div class="status-card"><b>Goal:</b> Bike in 6 months
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="goalBar"></div></div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-chips">
+        <button onclick="quick('Optimize my budget')">Budget</button>
+        <button onclick="quick('Savings Tips')">Save More</button>
+        <button onclick="quick('Investment Plan')">Invest</button>
+        <button onclick="quick('Pro Unlock')">Pro</button>
+      </div>
+
+      <!-- Investment Chart -->
+      <div class="chart" id="investmentChart">
+        <div class="bar" style="left:10%;width:20%;height:60%;background:#00c6ff;"></div>
+        <div class="bar" style="left:35%;width:20%;height:40%;background:#0072ff;"></div>
+        <div class="bar" style="left:60%;width:20%;height:80%;background:#00c6ff;"></div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="alert" id="alert1">💡<span>Save ₹5,000 more this month!</span></div>
+      <div class="alert" id="alert2">📈<span>SIP ₹2,000/month can grow wealth</span></div>
+      <div class="alert" id="alert3">🔔<span>Bike funding 50% complete</span></div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="panel chat">
+      <h1>🤖 AI Advisor</h1>
+      <div class="messages" id="msgs">
+        <div class="msg bot">Hello! I’m your finance AI. Ask me anything 💰</div>
+      </div>
+      <input id="text" placeholder="Type your query..." onkeydown="if(event.key==='Enter')send()">
+    </div>
+  </div>
+</div>
+
+<audio id="alertSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+
 <script>
+const landing=document.getElementById("landing");
+const login=document.getElementById("login");
+const dashboard=document.getElementById("dashboard");
 const msgs=document.getElementById("msgs");
 const text=document.getElementById("text");
+const alerts=[document.getElementById("alert1"),document.getElementById("alert2"),document.getElementById("alert3")];
+const bars=document.querySelectorAll(".bar");
+const sound=document.getElementById("alertSound");
+
+function goLogin(){landing.classList.add("hidden");login.classList.remove("hidden");}
+function goDashboard(){login.classList.add("hidden");dashboard.classList.remove("hidden");animateBars();rotateAlerts();animateBarsDynamic();}
 
 function quick(t){add(t,'user');thinking();}
-function send(){
-  if(!text.value.trim())return;
-  add(text.value,'user');
-  text.value='';
-  thinking();
-}
+function send(){if(!text.value.trim())return;add(text.value,'user');text.value='';thinking();}
 
 function thinking(){
-  const t=document.createElement('div');
-  t.className='msg bot';
-  t.innerText='Analyzing...';
-  msgs.appendChild(t);
-  msgs.scrollTop=msgs.scrollHeight;
-  setTimeout(()=>{t.innerText=reply()},900);
+  const t=document.createElement('div');t.className='msg bot';
+  const dots=document.createElement('span');dots.className='typing-dots';
+  dots.innerHTML='<span></span><span></span><span></span>';
+  t.appendChild(dots);
+  msgs.appendChild(t);msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{t.innerHTML=reply()},1400);
 }
 
-function reply(){
-  const r=[
-    "You can save ₹5,500/month by adjusting food & transport.",
-    "Investing ₹2,000/month in SIP could grow your wealth.",
-    "Follow 50-30-20 budgeting for better savings.",
-    "Upgrade to Pro to unlock full analytics dashboard."
-  ];
-  return r[Math.floor(Math.random()*r.length)];
+function reply(){const r=[
+"You can save ₹5,500/month by adjusting food & transport.",
+"Investing ₹2,000/month in SIP could grow your wealth.",
+"Follow 50-30-20 budgeting for better savings.",
+"Upgrade to Pro to unlock full analytics dashboard."
+];return r[Math.floor(Math.random()*r.length)];}
+
+function add(t,c){const d=document.createElement('div');d.className='msg '+c;d.innerText=t;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+
+function animateBars(){
+  document.getElementById("incomeBar").style.width="100%";
+  document.getElementById("savingsBar").style.width="25%";
+  document.getElementById("goalBar").style.width="60%";
 }
 
-function add(t,c){
-  const d=document.createElement('div');
-  d.className='msg '+c;
-  d.innerText=t;
-  msgs.appendChild(d);
-  msgs.scrollTop=msgs.scrollHeight;
+function animateBarsDynamic(){
+  setInterval(()=>{
+    bars.forEach(b=>{
+      let h=Math.floor(Math.random()*70)+30;
+      b.style.height=h+'%';
+    })
+  },2000)
+}
+
+function rotateAlerts(){let i=0;setInterval(()=>{
+  alerts.forEach(a=>a.classList.remove("show"));
+  alerts[i].classList.add("show");
+  sound.play();
+  i=(i+1)%alerts.length;
+},5000);}
+
+// PWA Registration
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(()=>console.log("Service Worker Registered"));
 }
 </script>
 
