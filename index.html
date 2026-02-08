@@ -3,25 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SaveSmart AI Demo</title>
+<title>SaveSmart AI - Cream Theme</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-body{margin:0;padding:0;font-family:sans-serif;background:linear-gradient(135deg,#050810,#1a1f3a);color:#fff;}
-.page{display:none;opacity:0;transition:opacity 0.5s;}
-.page.active{display:block;opacity:1;}
-.container{padding-top:80px;text-align:center;}
-.btn{padding:0.8rem 1.5rem;margin:0.5rem;border:none;border-radius:10px;cursor:pointer;}
-.btn-primary{background:linear-gradient(135deg,#6B5EFF,#5147D6);color:#fff;}
-input{padding:0.7rem 1rem;border-radius:8px;border:1px solid #555;background:rgba(255,255,255,0.05);color:#fff;margin-bottom:1rem;width:90%;}
+/* BASE */
+body {
+    margin:0;
+    padding:0;
+    font-family:sans-serif;
+    background: linear-gradient(135deg,#FFF8E7,#FFECD1);
+    color: #333;
+}
+.page {display:none; opacity:0; transition:opacity 0.5s;}
+.page.active {display:block; opacity:1;}
+.container {padding-top:80px; text-align:center;}
+h1,h2,h3,p{margin:0.5rem 0;}
+
+/* BUTTONS */
+.btn{padding:0.8rem 1.5rem;margin:0.5rem;border:none;border-radius:10px;cursor:pointer; transition:0.3s;}
+.btn-primary{background: linear-gradient(135deg,#FFA94D,#FF7A00); color:#fff;}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 4px 15px rgba(255,122,0,0.4);}
+.btn-secondary{background:#D8CFC4;color:#333;}
+.btn-secondary:hover{background:#CFC2B3;}
+
+/* INPUT */
+input{padding:0.7rem 1rem;border-radius:8px;border:1px solid #ccc;background:#fff;color:#333;margin-bottom:1rem;width:90%;}
+input:focus{outline:none;border-color:#FFA94D; box-shadow:0 0 10px rgba(255,122,0,0.2);}
+
+/* DASHBOARD */
 .dashboard-content{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-top:1rem;}
-.stat-card{background:rgba(255,255,255,0.05);padding:1rem;border-radius:12px;width:250px;}
-.chat-panel{background:rgba(255,255,255,0.05);padding:1rem;border-radius:12px;width:300px;height:300px;display:flex;flex-direction:column;}
+.stat-card{background:#fff;padding:1rem;border-radius:12px;width:250px;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.chart-container{height:200px;}
+.chat-panel{background:#fff;padding:1rem;border-radius:12px;width:300px;height:350px;display:flex;flex-direction:column;box-shadow:0 4px 20px rgba(0,0,0,0.05);}
 .chat-messages{flex:1;overflow-y:auto;margin-bottom:0.5rem;}
 .message{padding:0.5rem 0.7rem;border-radius:10px;margin:0.3rem 0;}
-.message.user{background:#6B5EFF;text-align:right;}
-.message.ai{background:rgba(107,94,255,0.2);}
+.message.user{background:#FFA94D;color:#fff;text-align:right;}
+.message.ai{background:#FFE0B2;text-align:left;}
 .chat-input{display:flex;gap:0.5rem;}
 .chat-input input{flex:1;}
+
+/* PAGE TRANSITIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
@@ -31,7 +53,7 @@ input{padding:0.7rem 1rem;border-radius:8px;border:1px solid #555;background:rgb
 <!-- LANDING -->
 <section id="landing" class="page active">
   <h1>Welcome to SaveSmart AI</h1>
-  <p>Manage your finances with AI insights!</p>
+  <p>Manage your finances smartly!</p>
   <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
 </section>
 
@@ -51,7 +73,17 @@ input{padding:0.7rem 1rem;border-radius:8px;border:1px solid #555;background:rgb
   <div class="dashboard-content">
     <div class="stat-card">
       <h3>Total Savings</h3>
-      <canvas id="savingsChart"></canvas>
+      <div class="chart-container">
+        <canvas id="savingsChart"></canvas>
+      </div>
+    </div>
+    <div class="stat-card">
+      <h3>Monthly Income</h3>
+      <p>$12,345</p>
+    </div>
+    <div class="stat-card">
+      <h3>Monthly Expenses</h3>
+      <p>$8,765</p>
     </div>
     <div class="chat-panel">
       <div class="chat-messages" id="chatMessages"></div>
@@ -79,11 +111,26 @@ document.getElementById('loginForm').addEventListener('submit',function(e){
 
 // CHART
 const ctx=document.getElementById('savingsChart').getContext('2d');
-new Chart(ctx,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Savings',data:[5000,7000,8000,10000,12000,12345],borderColor:'#6B5EFF',backgroundColor:'rgba(107,94,255,0.2)',fill:true,tension:0.4}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+new Chart(ctx,{
+  type:'line',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun'],
+    datasets:[{
+      label:'Savings',
+      data:[5000,7000,8000,10000,12000,12345],
+      borderColor:'#FF7A00',
+      backgroundColor:'rgba(255,122,0,0.2)',
+      fill:true,
+      tension:0.4
+    }]
+  },
+  options:{responsive:true,plugins:{legend:{display:false}}}
+});
 
 // CHAT
 const chatInput=document.getElementById('chatInput');
 document.getElementById('sendBtn').addEventListener('click',sendMsg);
+chatInput.addEventListener('keypress',function(e){if(e.key==='Enter'){sendMsg();}});
 function sendMsg(){
   const text=chatInput.value.trim(); if(!text)return;
   const chat=document.getElementById('chatMessages');
@@ -91,8 +138,13 @@ function sendMsg(){
   chat.appendChild(userMsg);
   chatInput.value='';
   chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{const aiMsg=document.createElement('div'); aiMsg.className='message ai'; aiMsg.innerText=`AI: I understood "${text}"`; chat.appendChild(aiMsg); chat.scrollTop=chat.scrollHeight;},500);
+  const typing=document.createElement('div'); typing.className='message ai'; typing.innerText='AI is typing...'; chat.appendChild(typing); chat.scrollTop=chat.scrollHeight;
+  setTimeout(()=>{
+    typing.innerText=`AI: I understood "${text}"`;
+    chat.scrollTop=chat.scrollHeight;
+  },700);
 }
 </script>
+
 </body>
 </html>
