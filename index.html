@@ -5,6 +5,9 @@
 <title>SaveSmart AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="description" content="SaveSmart AI helps you track expenses and save money using AI">
+<meta name="keywords" content="AI finance, expense tracker, money saving">
+
 <style>
 body{
   margin:0;
@@ -168,9 +171,9 @@ function sendMsg(){
 
   setTimeout(()=>{
     let reply="I am tracking this.";
-    if(text.match(/\d+/)) reply="💸 Expense noted. Try to save 20%.";
-    if(text.toLowerCase().includes("save")) reply="💡 Save before you spend.";
-    if(text.toLowerCase().includes("premium")) {
+    if(text.match(/\d+/)) reply="💸 Expense noted. Try to save at least 20%.";
+    if(text.toLowerCase().includes("save")) reply="💡 Tip: Save before you spend.";
+    if(text.toLowerCase().includes("premium")){
       reply="🚀 Upgrade to Pro for smart insights.";
       setTimeout(showPremium,800);
     }
