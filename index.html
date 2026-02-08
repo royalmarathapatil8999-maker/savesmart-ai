@@ -1,343 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaveSmart AI - Personal Finance Assistant</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel (for JSX) -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Lucide Icons (Must be after React) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/lucide-react@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaveSmart AI - Personal Finance Assistant</title>
 
-    <style>
-        /* Custom Scrollbar Styles */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #E7E5E4;
-            border-radius: 20px;
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.4s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        body {
-            background-color: #FDFBF7;
-        }
-    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- React & ReactDOM -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<!-- Babel (for JSX) -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+body { background-color: #FDFBF7; font-family: sans-serif; }
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #E7E5E4; border-radius: 20px; }
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform:translateY(0);} }
+</style>
 </head>
 <body>
-    <div id="root"></div>
+<div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        
-        // Use the correct global object for lucide-react in UMD
-        const { 
-            Home, PieChart, MessageSquare, Target, CreditCard, Crown, 
-            TrendingUp, TrendingDown, Plus, ArrowRight, ShieldCheck, 
-            Zap, Lock, Menu, X, Send, User, Bot 
-        } = lucide;
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+const { Home, PieChart, MessageSquare, Target, CreditCard, Crown, TrendingUp, TrendingDown, Plus, ArrowRight, ShieldCheck, Zap, Lock, Menu, X, Send, User, Bot } = lucide;
 
-        // --- Mock Data & Constants ---
-        const INITIAL_TRANSACTIONS = [
-            { id: 1, title: 'Freelance Project', amount: 45000, type: 'income', category: 'Salary', date: '2023-10-25' },
-            { id: 2, title: 'Grocery Run', amount: 3200, type: 'expense', category: 'Food', date: '2023-10-26' },
-            { id: 3, title: 'Netflix Subscription', amount: 649, type: 'expense', category: 'Entertainment', date: '2023-10-27' },
-            { id: 4, title: 'Uber Rides', amount: 1500, type: 'expense', category: 'Transport', date: '2023-10-28' },
-            { id: 5, title: 'Stock Dividend', amount: 1200, type: 'income', category: 'Investment', date: '2023-10-29' },
-        ];
+// Mock data
+const INITIAL_TRANSACTIONS = [
+{ id:1, title:'Freelance Project', amount:45000, type:'income', category:'Salary', date:'2023-10-25' },
+{ id:2, title:'Grocery Run', amount:3200, type:'expense', category:'Food', date:'2023-10-26' },
+{ id:3, title:'Netflix Subscription', amount:649, type:'expense', category:'Entertainment', date:'2023-10-27' },
+{ id:4, title:'Uber Rides', amount:1500, type:'expense', category:'Transport', date:'2023-10-28' },
+{ id:5, title:'Stock Dividend', amount:1200, type:'income', category:'Investment', date:'2023-10-29' },
+];
 
-        const INITIAL_GOALS = [
-            { id: 1, name: 'Emergency Fund', target: 100000, current: 45000, color: 'bg-emerald-400' },
-            { id: 2, name: 'Paris Trip', target: 250000, current: 85000, color: 'bg-blue-400' },
-            { id: 3, name: 'New Macbook', target: 150000, current: 120000, color: 'bg-amber-400' },
-        ];
+// Simple Card
+const Card = ({ children, className="" }) => <div className={`bg-white rounded-3xl shadow-sm border border-stone-100 p-6 ${className}`}>{children}</div>;
 
-        const SUGGESTED_BUDGETS = [
-            { category: 'Food & Dining', limit: 15000, spent: 12000 },
-            { category: 'Transport', limit: 8000, spent: 5000 },
-            { category: 'Entertainment', limit: 5000, spent: 3000 },
-        ];
+function App() {
+  const [activeView, setActiveView] = useState('dashboard');
+  const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
+  const [messages, setMessages] = useState([{ role:'ai', text:"Hello! I'm SaveSmart AI. How can I assist you today?" }]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const chatEndRef = useRef(null);
 
-        // --- Helper Components ---
-        const Card = ({ children, className = "" }) => (
-            <div className={`bg-white rounded-3xl shadow-sm border border-stone-100 p-6 ${className}`}>
-                {children}
-            </div>
-        );
+  const totalIncome = transactions.filter(t => t.type==='income').reduce((a,c)=>a+c.amount,0);
+  const totalExpense = transactions.filter(t => t.type==='expense').reduce((a,c)=>a+c.amount,0);
+  const currentBalance = totalIncome - totalExpense;
 
-        const Badge = ({ children, type = "neutral" }) => {
-            const styles = {
-                neutral: "bg-stone-100 text-stone-600",
-                success: "bg-emerald-50 text-emerald-700",
-                warning: "bg-amber-50 text-amber-700",
-                premium: "bg-gradient-to-r from-amber-200 to-yellow-400 text-amber-900 font-medium",
-            };
-            return (
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles[type] || styles.neutral}`}>
-                    {children}
-                </span>
-            );
-        };
+  const scrollToBottom = () => chatEndRef.current?.scrollIntoView({behavior:"smooth"});
+  useEffect(()=>{ scrollToBottom(); }, [messages, isTyping, activeView]);
 
-        function App() {
-            const [activeView, setActiveView] = useState('dashboard');
-            const [isPremium, setIsPremium] = useState(false);
-            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-            const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
-            const [goals, setGoals] = useState(INITIAL_GOALS);
-            
-            const [messages, setMessages] = useState([
-                { role: 'ai', text: "Hello! I'm SaveSmart AI. I can help you track expenses, plan budgets, and grow your wealth. How can I assist you today?" }
-            ]);
-            const [inputMessage, setInputMessage] = useState("");
-            const [isTyping, setIsTyping] = useState(false);
-            const chatEndRef = useRef(null);
+  const handleSendMessage = () => {
+    if(!inputMessage.trim()) return;
+    const userText = inputMessage;
+    setMessages(prev=>[...prev,{role:'user', text:userText}]);
+    setInputMessage(""); setIsTyping(true);
 
-            const totalIncome = transactions.filter(t => t.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
-            const totalExpense = transactions.filter(t => t.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
-            const currentBalance = totalIncome - totalExpense;
+    setTimeout(()=>{
+      let aiResponse = "I'm noting that. Want help with budget, transactions, or goals?";
+      const text = userText.toLowerCase();
+      if(text.includes("income")||text.includes("expense")) aiResponse = `Your total income: ₹${totalIncome}, expenses: ₹${totalExpense}.`;
+      else if(text.includes("premium")||text.includes("upgrade")) aiResponse = "Upgrade to Premium for full analytics.";
+      setMessages(prev=>[...prev,{role:'ai', text:aiResponse}]); setIsTyping(false);
+    },1200);
+  };
 
-            const scrollToBottom = () => {
-                chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-            };
+  const DashboardView = () => (
+    <div className="p-6 space-y-6 animate-fade-in">
+      <h2 className="text-2xl font-bold">Overview</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <p>Total Balance</p>
+          <h3 className="text-2xl font-bold">₹ {currentBalance}</h3>
+        </Card>
+        <Card>
+          <p>Total Income</p>
+          <h3 className="text-2xl font-bold">₹ {totalIncome}</h3>
+        </Card>
+        <Card>
+          <p>Total Expenses</p>
+          <h3 className="text-2xl font-bold">₹ {totalExpense}</h3>
+        </Card>
+      </div>
+    </div>
+  );
 
-            useEffect(() => {
-                scrollToBottom();
-            }, [messages, isTyping, activeView]);
+  const ChatView = () => (
+    <div className="flex flex-col h-screen p-6">
+      <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar">
+        {messages.map((msg,i)=>(
+          <div key={i} className={`flex ${msg.role==='user'?'justify-end':'justify-start'}`}>
+            <div className={`p-3 rounded-xl ${msg.role==='user'?'bg-stone-800 text-white':'bg-white text-stone-700 border border-stone-200'}`}>{msg.text}</div>
+          </div>
+        ))}
+        {isTyping && <div className="flex justify-start p-3"><span className="animate-bounce mr-1">●</span><span className="animate-bounce mr-1 delay-100">●</span><span className="animate-bounce delay-200">●</span></div>}
+        <div ref={chatEndRef}></div>
+      </div>
+      <div className="flex mt-2 gap-2">
+        <input 
+          type="text" 
+          placeholder="Ask about finances..."
+          className="flex-1 border border-stone-300 p-2 rounded-xl"
+          value={inputMessage}
+          onChange={e=>setInputMessage(e.target.value)}
+          onKeyDown={e=>e.key==='Enter' && handleSendMessage()}
+        />
+        <button onClick={handleSendMessage} className="bg-stone-800 text-white px-4 py-2 rounded-xl">Send</button>
+      </div>
+    </div>
+  );
 
-            const handleSendMessage = async () => {
-                if (!inputMessage.trim()) return;
+  return (
+    <div>
+      <nav className="flex gap-4 p-4 bg-stone-100">
+        <button onClick={()=>setActiveView('dashboard')} className="px-3 py-1 bg-white rounded-lg shadow">Dashboard</button>
+        <button onClick={()=>setActiveView('chat')} className="px-3 py-1 bg-white rounded-lg shadow">Chat</button>
+      </nav>
+      {activeView==='dashboard' ? <DashboardView/> : <ChatView/>}
+    </div>
+  );
+}
 
-                const userText = inputMessage;
-                setMessages(prev => [...prev, { role: 'user', text: userText }]);
-                setInputMessage("");
-                setIsTyping(true);
-
-                setTimeout(() => {
-                    let aiResponse = "";
-                    const lowerText = userText.toLowerCase();
-
-                    if (lowerText.includes("premium") || lowerText.includes("upgrade")) {
-                        aiResponse = "Upgrading to Premium unlocks advanced analytics, personalized investment strategies, and graphical reports. Would you like to see the plans?";
-                    } else if (lowerText.includes("save") || lowerText.includes("goal")) {
-                        aiResponse = "Saving is key to financial freedom! I see you have 3 active goals. To reach your 'Paris Trip' goal sooner, try reducing your 'Entertainment' budget by 10%.";
-                    } else if (lowerText.includes("spent") || lowerText.includes("expense")) {
-                        aiResponse = `Your total expenses this month are ₹${totalExpense.toLocaleString()}. Your top spending category is 'Food'. Upgrade to Premium to see a full breakdown chart.`;
-                    } else if (lowerText.includes("invest")) {
-                        aiResponse = isPremium 
-                        ? "Based on your risk profile, I recommend diversifying into Index Funds (60%) and Blue-chip stocks (40%). The market is currently bullish." 
-                        : "Investments are a great way to grow wealth. I can suggest stocks and mutual funds based on your goals. Upgrade to Premium for personalized risk-based strategies.";
-                    } else if (lowerText.includes("budget")) {
-                        aiResponse = "Based on your income, I suggest the 50/30/20 rule: 50% needs, 30% wants, 20% savings. You are currently saving about 25% of your income, which is excellent!";
-                    } else {
-                        aiResponse = "I've noted that. Is there anything specific about your finances, like adding a transaction or checking a goal, that you'd like help with?";
-                    }
-
-                    setMessages(prev => [...prev, { role: 'ai', text: aiResponse }]);
-                    setIsTyping(false);
-                }, 1500);
-            };
-
-            const handleAddTransaction = (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const newTx = {
-                    id: Date.now(),
-                    title: formData.get('title'),
-                    amount: parseFloat(formData.get('amount')),
-                    type: formData.get('type'),
-                    category: formData.get('category'),
-                    date: new Date().toISOString().split('T')[0]
-                };
-                setTransactions([newTx, ...transactions]);
-                e.target.reset();
-            };
-
-            const DashboardView = () => (
-                <div className="space-y-6 animate-fade-in">
-                    <header className="flex justify-between items-center mb-2">
-                        <div>
-                            <h2 className="text-2xl font-bold text-stone-800">Overview</h2>
-                            <p className="text-stone-500 text-sm">Welcome back, User</p>
-                        </div>
-                        {!isPremium && (
-                            <button 
-                                onClick={() => setActiveView('premium')}
-                                className="bg-stone-800 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-stone-700 transition flex items-center gap-2"
-                            >
-                                <Crown size={16} className="text-amber-300" />
-                                Upgrade
-                            </button>
-                        )}
-                    </header>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Card className="bg-stone-800 text-white border-none">
-                            <p className="text-stone-400 text-sm font-medium mb-1">Total Balance</p>
-                            <h3 className="text-3xl font-bold tracking-tight">₹ {currentBalance.toLocaleString()}</h3>
-                            <div className="mt-4 flex items-center gap-2 text-xs text-stone-300">
-                                <span className="bg-white/10 px-2 py-1 rounded-lg text-emerald-300 flex items-center gap-1">
-                                    <TrendingUp size={12} /> +2.5%
-                                </span>
-                                vs last month
-                            </div>
-                        </Card>
-
-                        <Card>
-                            <div className="flex justify-between items-start mb-2">
-                                <div className="p-2 bg-emerald-100 rounded-xl text-emerald-600">
-                                    <TrendingUp size={20} />
-                                </div>
-                                <Badge type="success">Income</Badge>
-                            </div>
-                            <p className="text-stone-500 text-sm">Total Income</p>
-                            <h3 className="text-2xl font-bold text-stone-800">₹ {totalIncome.toLocaleString()}</h3>
-                        </Card>
-
-                        <Card>
-                            <div className="flex justify-between items-start mb-2">
-                                <div className="p-2 bg-rose-100 rounded-xl text-rose-600">
-                                    <TrendingDown size={20} />
-                                </div>
-                                <Badge type="warning">Expense</Badge>
-                            </div>
-                            <p className="text-stone-500 text-sm">Total Expenses</p>
-                            <h3 className="text-2xl font-bold text-stone-800">₹ {totalExpense.toLocaleString()}</h3>
-                        </Card>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <Card className="flex flex-col h-full">
-                            <h3 className="font-bold text-stone-800 mb-4 flex items-center gap-2">
-                                <PieChart size={18} /> Monthly Spending
-                            </h3>
-                            {isPremium ? (
-                                <div className="flex items-center justify-center h-48">
-                                    <div className="flex items-end gap-4 h-32 w-full justify-center">
-                                        {['Food', 'Rent', 'Fun', 'Travel'].map((cat, i) => (
-                                            <div key={cat} className="flex flex-col items-center gap-2 group">
-                                                <div 
-                                                    className="w-12 bg-stone-800 rounded-t-lg transition-all duration-500 group-hover:bg-amber-500" 
-                                                    style={{ height: `${[60, 80, 40, 50][i]}%` }}
-                                                ></div>
-                                                <span className="text-xs text-stone-500">{cat}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="h-48 bg-stone-50 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-dashed border-stone-200">
-                                    <div className="p-3 bg-white rounded-full shadow-sm mb-3">
-                                        <Lock size={20} className="text-stone-400" />
-                                    </div>
-                                    <h4 className="text-stone-800 font-semibold text-sm">Detailed Analytics Locked</h4>
-                                    <p className="text-stone-500 text-xs mt-1 mb-3">Upgrade to visualize your spending habits.</p>
-                                    <button onClick={() => setActiveView('premium')} className="text-amber-600 text-xs font-bold hover:underline">
-                                        Unlock Premium
-                                    </button>
-                                </div>
-                            )}
-                        </Card>
-
-                        <Card className="flex flex-col">
-                            <h3 className="font-bold text-stone-800 mb-4 flex items-center gap-2">
-                                <CreditCard size={18} /> Recent Transactions
-                            </h3>
-                            <div className="space-y-3 overflow-y-auto max-h-48 pr-2 custom-scrollbar">
-                                {transactions.slice(0, 4).map(t => (
-                                    <div key={t.id} className="flex items-center justify-between p-3 hover:bg-stone-50 rounded-xl transition cursor-default">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${t.type === 'income' ? 'bg-emerald-100 text-emerald-600' : 'bg-stone-100 text-stone-600'}`}>
-                                                {t.type === 'income' ? <TrendingUp size={16} /> : <CreditCard size={16} />}
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-semibold text-stone-800">{t.title}</p>
-                                                <p className="text-xs text-stone-500">{t.category}</p>
-                                            </div>
-                                        </div>
-                                        <span className={`font-bold text-sm ${t.type === 'income' ? 'text-emerald-600' : 'text-stone-800'}`}>
-                                            {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString()}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                            <button onClick={() => setActiveView('transactions')} className="mt-4 text-xs font-semibold text-stone-500 hover:text-stone-800 flex items-center gap-1">
-                                View All <ArrowRight size={12} />
-                            </button>
-                        </Card>
-                    </div>
-                </div>
-            );
-
-            const ChatView = () => (
-                <div className="h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)] flex flex-col">
-                    <header className="mb-4">
-                        <h2 className="text-2xl font-bold text-stone-800 flex items-center gap-2">
-                            SaveSmart AI <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full font-normal">Beta</span>
-                        </h2>
-                        <p className="text-stone-500 text-sm">Ask me about your budget, investments, or spending.</p>
-                    </header>
-                    
-                    <Card className="flex-1 flex flex-col overflow-hidden p-0 border-0 shadow-lg">
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-stone-50/50 custom-scrollbar">
-                            {messages.map((msg, idx) => (
-                                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[80%] rounded-2xl p-4 shadow-sm text-sm leading-relaxed ${
-                                        msg.role === 'user' 
-                                        ? 'bg-stone-800 text-white rounded-br-none' 
-                                        : 'bg-white text-stone-700 border border-stone-100 rounded-bl-none'
-                                    }`}>
-                                        {msg.role === 'ai' && (
-                                            <div className="flex items-center gap-2 mb-2 text-xs font-bold text-amber-600 uppercase tracking-wider">
-                                                <Bot size={12} /> SaveSmart AI
-                                            </div>
-                                        )}
-                                        {msg.text}
-                                    </div>
-                                </div>
-                            ))}
-                            {isTyping && (
-                                <div className="flex justify-start">
-                                    <div className="bg-white text-stone-400 p-4 rounded-2xl rounded-bl-none border border-stone-100 shadow-sm flex gap-1">
-                                        <span className="animate-bounce">●</span>
-                                        <span className="animate-bounce delay-100">●</span>
-                                        <span className="animate-bounce delay-200">●</span>
-                                    </div>
-                                </div>
-                            )}
-                            <div ref={chatEndRef} />
-                        </div>
-
-                        <div className="p-4 bg-white border-t border-stone-100">
-                            <div className="flex items-center gap-2 bg-stone-50 rounded-xl px-4 py-2 border border-stone-200 focus-within:border-stone-400 focus-within:bg-white transition">
-                                <input 
-                                    type="text" 
-                                    className="flex-1 bg-transparent outline-none text-stone-800 placeholder-stone-400"
-                                    placeholder="Ask about your finances..."
-                                    value={inputMessage}
-                                    onChange={(e) => setInputMessage(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                                />
-                                <button 
-                                    onClick={handleSendMessage}
-                                    disabled={!inputMessage.trim()}
-                    
+ReactDOM.render(<App/>, document.getElementById('root'));
+</script>
+</body>
+</html>
