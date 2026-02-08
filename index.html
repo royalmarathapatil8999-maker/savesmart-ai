@@ -5,141 +5,167 @@
 <title>SaveSmart AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-
 body{
   min-height:100vh;
-  background:#050505;
+  background:radial-gradient(circle at 20% 20%,#1a2a6c,#000),
+             radial-gradient(circle at 80% 80%,#16222a,#000);
+  background-blend-mode:screen;
+  color:#fff;
   overflow:hidden;
-  color:white;
 }
 
-/* BLOBS */
-.blob{
+/* floating dots */
+.dot{
   position:absolute;
-  width:300px;
-  height:300px;
-  background:linear-gradient(45deg,#00c6ff,#0072ff);
-  filter:blur(120px);
-  animation:move 12s infinite alternate;
+  width:6px;height:6px;
+  background:#00c6ff;
+  border-radius:50%;
+  opacity:.6;
+  animation:float 10s infinite linear;
 }
-.blob.one{top:-100px;left:-100px}
-.blob.two{bottom:-120px;right:-120px;animation-delay:3s}
-
-@keyframes move{
-  0%{transform:translate(0,0)}
-  100%{transform:translate(200px,150px)}
+@keyframes float{
+  from{transform:translateY(100vh)}
+  to{transform:translateY(-10vh)}
 }
 
-/* LANDING */
+/* sections */
 .section{
   position:absolute;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  transition:opacity .6s,transform .6s;
+  transition:.6s;
 }
-.hidden{
-  opacity:0;
-  pointer-events:none;
-  transform:scale(1.05);
-}
+.hidden{opacity:0;pointer-events:none;transform:scale(1.05)}
 
 .card{
-  width:90%;
-  max-width:420px;
-  padding:30px;
-  border-radius:22px;
+  width:92%;
+  max-width:430px;
   background:rgba(255,255,255,.08);
-  backdrop-filter:blur(18px);
-  box-shadow:0 20px 60px rgba(0,0,0,.6);
-  text-align:center;
+  backdrop-filter:blur(20px);
+  border-radius:24px;
+  padding:28px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
 }
 
-h1{
-  font-size:1.8rem;
-  margin-bottom:10px;
-}
-p{
-  font-size:.95rem;
-  opacity:.85;
-  margin-bottom:25px;
-}
+h1{font-size:1.8rem;margin-bottom:8px}
+p{font-size:.95rem;opacity:.8;margin-bottom:22px}
 
 button{
   width:100%;
   padding:14px;
   border:none;
   border-radius:14px;
-  font-size:1rem;
-  font-weight:600;
   background:linear-gradient(135deg,#00c6ff,#0072ff);
   color:white;
+  font-weight:600;
   cursor:pointer;
   transition:.3s;
 }
-button:hover{transform:scale(1.05)}
+button:hover{transform:translateY(-2px)}
 
 input{
   width:100%;
   padding:14px;
-  margin-bottom:14px;
   border-radius:14px;
   border:none;
+  margin-bottom:12px;
   outline:none;
 }
 
-/* CHAT */
+/* features */
+.features{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:20px;
+}
+.feature{
+  background:rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:14px;
+  font-size:.85rem;
+}
+
+/* chat */
 .chat{
+  height:80vh;
   display:flex;
   flex-direction:column;
-  height:80vh;
 }
 .messages{
   flex:1;
   overflow-y:auto;
-  margin-bottom:10px;
 }
 .msg{
   padding:12px 14px;
   border-radius:14px;
   margin-bottom:10px;
   max-width:80%;
+  animation:pop .3s ease;
 }
+@keyframes pop{from{transform:scale(.9);opacity:0}to{opacity:1}}
 .bot{background:rgba(255,255,255,.15)}
 .user{
   background:linear-gradient(135deg,#00c6ff,#0072ff);
   align-self:flex-end;
+}
+
+.quick{
+  display:flex;
+  gap:8px;
+  margin:10px 0;
+}
+.quick button{
+  flex:1;
+  padding:10px;
+  font-size:.8rem;
 }
 </style>
 </head>
 
 <body>
 
-<div class="blob one"></div>
-<div class="blob two"></div>
+<script>
+for(let i=0;i<25;i++){
+  let d=document.createElement("div");
+  d.className="dot";
+  d.style.left=Math.random()*100+"%";
+  d.style.animationDuration=5+Math.random()*10+"s";
+  document.body.appendChild(d);
+}
+</script>
 
 <!-- LANDING -->
 <div id="landing" class="section">
   <div class="card">
     <h1>💸 SaveSmart AI</h1>
-    <p>Your personal AI to save money, track spending & build wealth.</p>
-    <button onclick="goLogin()">Get Started Free</button>
+    <p>Smarter saving. Better money habits. AI-powered.</p>
+
+    <div class="features">
+      <div class="feature">📊 Smart Budgeting</div>
+      <div class="feature">💡 Saving Tips</div>
+      <div class="feature">📈 Investment Guide</div>
+      <div class="feature">🔐 Secure & Private</div>
+    </div>
+
+    <button onclick="goLogin()">Get Started</button>
   </div>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="section hidden">
   <div class="card">
-    <h1>Welcome Back 👋</h1>
+    <h1>Welcome 👋</h1>
     <p>Login to continue</p>
     <input placeholder="Email">
     <input placeholder="Password" type="password">
-    <button onclick="goChat()">Login</button>
+    <button onclick="goChat()">Continue</button>
   </div>
 </div>
 
@@ -147,37 +173,57 @@ input{
 <div id="chat" class="section hidden">
   <div class="card chat">
     <h1>🤖 SaveSmart AI</h1>
-    <div class="messages" id="msgs">
-      <div class="msg bot">Hi! Ask me anything about saving money 💰</div>
+
+    <div class="quick">
+      <button onclick="quick('Give me saving tips')">Saving</button>
+      <button onclick="quick('Make a budget')">Budget</button>
+      <button onclick="quick('Investment advice')">Invest</button>
     </div>
-    <input id="text" placeholder="Type message..." onkeydown="if(event.key==='Enter')send()">
+
+    <div class="messages" id="msgs">
+      <div class="msg bot">Hi 👋 I’m your finance AI.</div>
+    </div>
+
+    <input id="text" placeholder="Ask about money..." onkeydown="if(event.key==='Enter')send()">
   </div>
 </div>
 
 <script>
-const landing=document.getElementById('landing');
-const login=document.getElementById('login');
-const chat=document.getElementById('chat');
-const msgs=document.getElementById('msgs');
-const text=document.getElementById('text');
+const landing=landingEl=document.getElementById("landing");
+const login=document.getElementById("login");
+const chat=document.getElementById("chat");
+const msgs=document.getElementById("msgs");
+const text=document.getElementById("text");
 
 function goLogin(){
-  landing.classList.add('hidden');
-  login.classList.remove('hidden');
+  landing.classList.add("hidden");
+  login.classList.remove("hidden");
 }
 function goChat(){
-  login.classList.add('hidden');
-  chat.classList.remove('hidden');
+  login.classList.add("hidden");
+  chat.classList.remove("hidden");
 }
 function send(){
   if(!text.value.trim())return;
-  add(text.value,'user');
-  text.value='';
-  setTimeout(()=>add("Real AI coming soon 😄",'bot'),700);
+  add(text.value,"user");
+  text.value="";
+  typing();
+}
+function quick(t){ add(t,"user"); typing(); }
+
+function typing(){
+  let t=document.createElement("div");
+  t.className="msg bot";
+  t.innerText="Typing...";
+  msgs.appendChild(t);
+  msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    t.innerText="Real AI integration coming soon 🚀";
+  },800);
 }
 function add(t,c){
-  const d=document.createElement('div');
-  d.className='msg '+c;
+  let d=document.createElement("div");
+  d.className="msg "+c;
   d.innerText=t;
   msgs.appendChild(d);
   msgs.scrollTop=msgs.scrollHeight;
@@ -185,4 +231,4 @@ function add(t,c){
 </script>
 
 </body>
-  </html>
+</html>
