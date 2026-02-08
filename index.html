@@ -96,7 +96,7 @@ body {margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe U
     <div class="hero-badge">AI Personal Finance</div>
     <h1>Welcome to SaveSmart AI</h1>
     <p>Manage your finances intelligently with AI-powered insights.</p>
-    <button class="btn btn-primary" onclick="showPage('login')">Get Started</button>
+    <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
   </div>
 </section>
 
@@ -108,7 +108,7 @@ body {margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe U
         <h2>Login</h2>
         <p>Access your dashboard</p>
       </div>
-      <form onsubmit="login(event)">
+      <form id="loginForm">
         <div class="form-group">
           <input type="email" placeholder="Email" required>
         </div>
@@ -135,7 +135,7 @@ body {margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe U
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
           <input type="text" id="chatInput" placeholder="Ask me anything...">
-          <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+          <button class="btn btn-primary" id="sendBtn">Send</button>
         </div>
       </div>
     </div>
@@ -151,18 +151,22 @@ function showPage(pageId){
   document.getElementById(pageId).classList.add('active');
 }
 
-// LOGIN DUMMY
-function login(e){
+// GET STARTED BUTTON
+document.getElementById('getStartedBtn').addEventListener('click',()=>showPage('login'));
+
+// LOGIN FORM
+document.getElementById('loginForm').addEventListener('submit',function(e){
   e.preventDefault();
   alert("Login successful!");
   showPage('dashboard');
-}
+});
 
 // CHART.JS
 const ctx=document.getElementById('savingsChart').getContext('2d');
 new Chart(ctx,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Savings',data:[5000,7000,8000,10000,12000,12345],borderColor:'#6B5EFF',backgroundColor:'rgba(107,94,255,0.2)',fill:true,tension:0.4}]},options:{responsive:true,plugins:{legend:{display:false}}}});
 
 // CHAT DUMMY
+document.getElementById('sendBtn').addEventListener('click',sendMessage);
 function sendMessage(){
   const input=document.getElementById('chatInput');
   const message=input.value.trim();
