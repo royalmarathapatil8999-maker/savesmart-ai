@@ -1,138 +1,320 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SaveSmart AI - Personal Finance Assistant</title>
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>SaveSmart AI | Next-Level Finance</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <script src="https://unpkg.com/lucide@latest"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    <link rel="preconnect" href="https://fonts.googleapis.com">  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">  
+    <style>  
+        :root {  
+            --primary: #06b6d4;  
+            --secondary: #8b5cf6;  
+            --accent: #10b981;  
+            --bg: #030712;  
+        }  body {  
+        font-family: 'Plus Jakarta Sans', sans-serif;  
+        background-color: var(--bg);  
+        color: white;  
+        overflow-x: hidden;  
+        margin: 0;  
+    }  
 
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
+    .glass {  
+        background: rgba(255, 255, 255, 0.03);  
+        backdrop-filter: blur(12px);  
+        -webkit-backdrop-filter: blur(12px);  
+        border: 1px solid rgba(255, 255, 255, 0.1);  
+        border-radius: 1rem;  
+    }  
 
-<!-- React & ReactDOM -->
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    .glow-orb {  
+        position: fixed;  
+        width: 400px;  
+        height: 400px;  
+        border-radius: 50%;  
+        background: radial-gradient(circle, var(--primary) 0%, transparent 70%);  
+        filter: blur(80px);  
+        opacity: 0.15;  
+        z-index: -1;  
+        animation: move 20s infinite alternate;  
+    }  
 
-<!-- Babel (for JSX) -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    @keyframes move {  
+        from { transform: translate(-10%, -10%); }  
+        to { transform: translate(20%, 20%); }  
+    }  
 
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
+    .glow-orb-2 {  
+        background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);  
+        right: -100px;  
+        bottom: -100px;  
+        animation-delay: -5s;  
+    }  
 
-<style>
-body { background-color: #FDFBF7; font-family: sans-serif; }
-.custom-scrollbar::-webkit-scrollbar { width: 6px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #E7E5E4; border-radius: 20px; }
-.animate-fade-in { animation: fadeIn 0.4s ease-out; }
-@keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform:translateY(0);} }
+    .animate-float {  
+        animation: float 3s ease-in-out infinite;  
+    }  
+
+    @keyframes float {  
+        0%, 100% { transform: translateY(0); }  
+        50% { transform: translateY(-10px); }  
+    }  
+
+    .chat-container {  
+        height: 400px;  
+        display: flex;  
+        flex-direction: column;  
+    }  
+
+    .message {  
+        max-width: 85%;  
+        padding: 0.75rem 1rem;  
+        border-radius: 1rem;  
+        margin-bottom: 0.5rem;  
+        animation: fadeIn 0.3s ease-out;  
+    }  
+
+    @keyframes fadeIn {  
+        from { opacity: 0; transform: translateY(5px); }  
+        to { opacity: 1; transform: translateY(0); }  
+    }  
+
+    .message-user {  
+        align-self: flex-end;  
+        background: var(--primary);  
+        color: white;  
+    }  
+
+    .message-ai {  
+        align-self: flex-start;  
+        background: rgba(255, 255, 255, 0.1);  
+        color: white;  
+    }  
+
+    .typing {  
+        font-style: italic;  
+        opacity: 0.7;  
+        font-size: 0.8rem;  
+    }  
+
+    #login-section, #dashboard-section {  
+        display: none;  
+    }  
+
+    .gradient-text {  
+        background: linear-gradient(to right, var(--primary), var(--secondary));  
+        -webkit-background-clip: text;  
+        -webkit-text-fill-color: transparent;  
+    }  
+
+    .btn-premium {  
+        background: linear-gradient(to right, var(--primary), var(--secondary));  
+        transition: all 0.3s ease;  
+        position: relative;  
+        overflow: hidden;  
+    }  
+
+    .btn-premium:hover {  
+        transform: scale(1.05);  
+        box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);  
+    }  
+
+    #chart-wrapper {  
+        position: relative;  
+        height: 300px;  
+        width: 100%;  
+    }  
 </style>
-</head>
-<body>
-<div id="root"></div>
 
-<script type="text/babel">
-const { useState, useEffect, useRef } = React;
-const { Home, PieChart, MessageSquare, Target, CreditCard, Crown, TrendingUp, TrendingDown, Plus, ArrowRight, ShieldCheck, Zap, Lock, Menu, X, Send, User, Bot } = lucide;
+</head>  
+<body>  
+    <div class="glow-orb"></div>  
+    <div class="glow-orb glow-orb-2"></div>  <!-- LANDING SECTION -->  
+<section id="landing-section" class="min-h-screen flex flex-col items-center justify-center px-6 text-center">  
+    <div class="animate-float mb-6">  
+        <i data-lucide="shield-check" class="w-16 h-16 text-cyan-400"></i>  
+    </div>  
+    <h1 class="text-5xl md:text-7xl font-extrabold mb-6">  
+        Meet <span class="gradient-text">SaveSmart AI</span>  
+    </h1>  
+    <p class="text-gray-400 text-lg md:text-xl max-w-2xl mb-10">  
+        The premium personal finance AI that thinks ahead. Track, save, and grow your wealth with next-level intelligence.  
+    </p>  
+    <button onclick="showSection('login')" class="btn-premium px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2">  
+        Get Started <i data-lucide="arrow-right" class="w-5 h-5"></i>  
+    </button>  
+</section>  
 
-// Mock data
-const INITIAL_TRANSACTIONS = [
-{ id:1, title:'Freelance Project', amount:45000, type:'income', category:'Salary', date:'2023-10-25' },
-{ id:2, title:'Grocery Run', amount:3200, type:'expense', category:'Food', date:'2023-10-26' },
-{ id:3, title:'Netflix Subscription', amount:649, type:'expense', category:'Entertainment', date:'2023-10-27' },
-{ id:4, title:'Uber Rides', amount:1500, type:'expense', category:'Transport', date:'2023-10-28' },
-{ id:5, title:'Stock Dividend', amount:1200, type:'income', category:'Investment', date:'2023-10-29' },
-];
+<!-- LOGIN SECTION -->  
+<section id="login-section" class="min-h-screen flex items-center justify-center px-6">  
+    <div class="glass p-8 w-full max-w-md">  
+        <div class="text-center mb-8">  
+            <i data-lucide="lock" class="w-12 h-12 text-cyan-400 mx-auto mb-4"></i>  
+            <h2 class="text-3xl font-bold">Welcome Back</h2>  
+            <p class="text-gray-400 mt-2">Sign in to your premium account</p>  
+        </div>  
+        <div class="space-y-4">  
+            <div>  
+                <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>  
+                <input type="email" placeholder="name@example.com" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500/50">  
+            </div>  
+            <div>  
+                <label class="block text-sm font-medium text-gray-400 mb-1">Password</label>  
+                <input type="password" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500/50">  
+            </div>  
+            <button onclick="showSection('dashboard')" class="w-full btn-premium py-3 rounded-lg font-bold">Sign In</button>  
+            <div class="relative py-4">  
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>  
+                <div class="relative flex justify-center text-xs uppercase"><span class="bg-gray-900 px-2 text-gray-500">Or</span></div>  
+            </div>  
+            <button onclick="showSection('dashboard')" class="w-full glass py-3 rounded-lg font-bold hover:bg-white/5 transition-all">Continue as Guest</button>  
+        </div>  
+    </div>  
+</section>  
 
-// Simple Card
-const Card = ({ children, className="" }) => <div className={`bg-white rounded-3xl shadow-sm border border-stone-100 p-6 ${className}`}>{children}</div>;
+<!-- DASHBOARD SECTION -->  
+<section id="dashboard-section" class="min-h-screen p-4 md:p-8 max-w-7xl mx-auto">  
+    <header class="flex justify-between items-center mb-8">  
+        <div class="flex items-center gap-2">  
+            <i data-lucide="wallet" class="text-cyan-400 w-8 h-8"></i>  
+            <span class="text-xl font-bold">SaveSmart</span>  
+        </div>  
+        <div class="flex items-center gap-4">  
+            <button onclick="alert('Upgrade to Pro features coming soon!')" class="hidden md:flex items-center gap-2 glass px-4 py-2 rounded-full border-cyan-500/30 text-cyan-400 text-sm font-bold animate-pulse">  
+                <i data-lucide="sparkles" class="w-4 h-4"></i> Upgrade to Pro  
+            </button>  
+            <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center">  
+                <i data-lucide="user" class="w-6 h-6 text-cyan-400"></i>  
+            </div>  
+        </div>  
+    </header>  
 
-function App() {
-  const [activeView, setActiveView] = useState('dashboard');
-  const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
-  const [messages, setMessages] = useState([{ role:'ai', text:"Hello! I'm SaveSmart AI. How can I assist you today?" }]);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const chatEndRef = useRef(null);
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">  
+        <div class="glass p-6 group hover:border-cyan-500/50 transition-all">  
+            <div class="flex justify-between items-start mb-4">  
+                <div class="p-2 bg-cyan-500/20 rounded-lg"><i data-lucide="banknote" class="text-cyan-400 w-6 h-6"></i></div>  
+                <span class="text-emerald-400 text-xs font-bold">+12.5%</span>  
+            </div>  
+            <h3 class="text-gray-400 text-sm mb-1">Total Balance</h3>  
+            <p class="text-3xl font-bold">$12,450.00</p>  
+        </div>  
+        <div class="glass p-6 group hover:border-purple-500/50 transition-all">  
+            <div class="flex justify-between items-start mb-4">  
+                <div class="p-2 bg-purple-500/20 rounded-lg"><i data-lucide="trending-up" class="text-purple-400 w-6 h-6"></i></div>  
+                <span class="text-emerald-400 text-xs font-bold">+5.2%</span>  
+            </div>  
+            <h3 class="text-gray-400 text-sm mb-1">Monthly Savings</h3>  
+            <p class="text-3xl font-bold">$3,200.00</p>  
+        </div>  
+        <div class="glass p-6 group hover:border-amber-500/50 transition-all">  
+            <div class="flex justify-between items-start mb-4">  
+                <div class="p-2 bg-amber-500/20 rounded-lg"><i data-lucide="target" class="text-amber-400 w-6 h-6"></i></div>  
+                <span class="text-gray-400 text-xs font-bold">85% of goal</span>  
+            </div>  
+            <h3 class="text-gray-400 text-sm mb-1">Savings Goal</h3>  
+            <p class="text-3xl font-bold">$15,000.00</p>  
+        </div>  
+    </div>  
 
-  const totalIncome = transactions.filter(t => t.type==='income').reduce((a,c)=>a+c.amount,0);
-  const totalExpense = transactions.filter(t => t.type==='expense').reduce((a,c)=>a+c.amount,0);
-  const currentBalance = totalIncome - totalExpense;
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">  
+        <div class="lg:col-span-2 space-y-8">  
+            <div class="glass p-6">  
+                <div class="flex justify-between items-center mb-6">  
+                    <h3 class="text-lg font-bold flex items-center gap-2">  
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-cyan-400"></i> Analytics Overview  
+                    </h3>  
+                    <div class="flex gap-2">  
+                        <span class="px-3 py-1 bg-white/5 rounded-md text-xs cursor-pointer">1W</span>  
+                        <span class="px-3 py-1 bg-cyan-500/20 rounded-md text-xs cursor-pointer text-cyan-400">1M</span>  
+                    </div>  
+                </div>  
+                <div id="chart-wrapper">  
+                    <canvas id="mainChart"></canvas>  
+                </div>  
+            </div>  
 
-  const scrollToBottom = () => chatEndRef.current?.scrollIntoView({behavior:"smooth"});
-  useEffect(()=>{ scrollToBottom(); }, [messages, isTyping, activeView]);
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">  
+                <button onclick="alert('Premium Budgeting Tool Activated')" class="glass p-4 text-center hover:bg-white/5 transition-all"><i data-lucide="pie-chart" class="w-6 h-6 text-cyan-400 mx-auto mb-2"></i><span class="text-xs block">Budget</span></button>  
+                <button onclick="alert('AI Generating Tips...')" class="glass p-4 text-center hover:bg-white/5 transition-all"><i data-lucide="lightbulb" class="text-amber-400 w-6 h-6 mx-auto mb-2"></i><span class="text-xs block">Tips</span></button>  
+                <button onclick="alert('Portfolio Analysis requires Pro')" class="glass p-4 text-center hover:bg-white/5 transition-all relative"><span class="absolute -top-2 -right-2 bg-cyan-500 text-[10px] px-1.5 py-0.5 rounded-full font-bold">PRO</span><i data-lucide="layout" class="text-purple-400 w-6 h-6 mx-auto mb-2"></i><span class="text-xs block">Invest</span></button>  
+                <button onclick="alert('Notification Center coming soon')" class="glass p-4 text-center hover:bg-white/5 transition-all"><i data-lucide="bell" class="text-rose-400 w-6 h-6 mx-auto mb-2"></i><span class="text-xs block">Alerts</span></button>  
+            </div>  
+        </div>  
 
-  const handleSendMessage = () => {
-    if(!inputMessage.trim()) return;
-    const userText = inputMessage;
-    setMessages(prev=>[...prev,{role:'user', text:userText}]);
-    setInputMessage(""); setIsTyping(true);
+        <div class="lg:col-span-1">  
+            <div class="glass flex flex-col h-full min-h-[500px]">  
+                <div class="p-4 border-b border-white/10 flex items-center gap-3">  
+                    <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center"><i data-lucide="bot" class="text-cyan-400"></i></div>  
+                    <div><h4 class="font-bold text-sm">SaveSmart AI</h4><span class="text-xs text-emerald-400">Online</span></div>  
+                </div>  
+                <div id="chat-box" class="chat-container flex-1 overflow-y-auto p-4 space-y-4">  
+                    <div class="message message-ai">Hello! I'm your SaveSmart AI. How can I help you today?</div>  
+                </div>  
+                <div id="typing-indicator" class="px-4 py-2 typing hidden">AI is thinking...</div>  
+                <div class="p-4 border-t border-white/10 flex gap-2">  
+                    <input id="chat-input" type="text" placeholder="Ask anything..." class="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500">  
+                    <button onclick="sendMessage()" class="p-2 bg-cyan-500 rounded-lg hover:bg-cyan-400"><i data-lucide="send" class="w-5 h-5"></i></button>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+</section>  
 
-    setTimeout(()=>{
-      let aiResponse = "I'm noting that. Want help with budget, transactions, or goals?";
-      const text = userText.toLowerCase();
-      if(text.includes("income")||text.includes("expense")) aiResponse = `Your total income: ₹${totalIncome}, expenses: ₹${totalExpense}.`;
-      else if(text.includes("premium")||text.includes("upgrade")) aiResponse = "Upgrade to Premium for full analytics.";
-      setMessages(prev=>[...prev,{role:'ai', text:aiResponse}]); setIsTyping(false);
-    },1200);
-  };
+<script>  
+    lucide.createIcons();  
 
-  const DashboardView = () => (
-    <div className="p-6 space-y-6 animate-fade-in">
-      <h2 className="text-2xl font-bold">Overview</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <p>Total Balance</p>
-          <h3 className="text-2xl font-bold">₹ {currentBalance}</h3>
-        </Card>
-        <Card>
-          <p>Total Income</p>
-          <h3 className="text-2xl font-bold">₹ {totalIncome}</h3>
-        </Card>
-        <Card>
-          <p>Total Expenses</p>
-          <h3 className="text-2xl font-bold">₹ {totalExpense}</h3>
-        </Card>
-      </div>
-    </div>
-  );
+    function showSection(id) {  
+        document.querySelectorAll('section').forEach(s => s.style.display = 'none');  
+        const section = document.getElementById(id + '-section');  
+        section.style.display = id === 'dashboard' ? 'block' : 'flex';  
+        if (id === 'dashboard') initChart();  
+        window.scrollTo(0, 0);  
+    }  
 
-  const ChatView = () => (
-    <div className="flex flex-col h-screen p-6">
-      <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar">
-        {messages.map((msg,i)=>(
-          <div key={i} className={`flex ${msg.role==='user'?'justify-end':'justify-start'}`}>
-            <div className={`p-3 rounded-xl ${msg.role==='user'?'bg-stone-800 text-white':'bg-white text-stone-700 border border-stone-200'}`}>{msg.text}</div>
-          </div>
-        ))}
-        {isTyping && <div className="flex justify-start p-3"><span className="animate-bounce mr-1">●</span><span className="animate-bounce mr-1 delay-100">●</span><span className="animate-bounce delay-200">●</span></div>}
-        <div ref={chatEndRef}></div>
-      </div>
-      <div className="flex mt-2 gap-2">
-        <input 
-          type="text" 
-          placeholder="Ask about finances..."
-          className="flex-1 border border-stone-300 p-2 rounded-xl"
-          value={inputMessage}
-          onChange={e=>setInputMessage(e.target.value)}
-          onKeyDown={e=>e.key==='Enter' && handleSendMessage()}
-        />
-        <button onClick={handleSendMessage} className="bg-stone-800 text-white px-4 py-2 rounded-xl">Send</button>
-      </div>
-    </div>
-  );
+    const responses = ["Based on your spending, I suggest saving $150 more.", "Recurring subscription found for 'StreamPlus'. Cancel?", "Savings rate is at 22%. Increase to 25%?", "You spent 15% less on coffee this month!"];  
 
-  return (
-    <div>
-      <nav className="flex gap-4 p-4 bg-stone-100">
-        <button onClick={()=>setActiveView('dashboard')} className="px-3 py-1 bg-white rounded-lg shadow">Dashboard</button>
-        <button onClick={()=>setActiveView('chat')} className="px-3 py-1 bg-white rounded-lg shadow">Chat</button>
-      </nav>
-      {activeView==='dashboard' ? <DashboardView/> : <ChatView/>}
-    </div>
-  );
+    function addMessage(role, text) {  
+        const chatBox = document.getElementById('chat-box');  
+        const msg = document.createElement('div');  
+        msg.className = `message message-${role}`;  
+        msg.innerText = text;  
+        chatBox.appendChild(msg);  
+        chatBox.scrollTop = chatBox.scrollHeight;  
+    }  
+
+    function sendMessage() {  
+        const input = document.getElementById('chat-input');  
+        if (!input.value.trim()) return;  
+        addMessage("user", input.value);  
+        input.value = '';  
+        document.getElementById('typing-indicator').classList.remove('hidden');  
+        setTimeout(() => {  
+            document.getElementById('typing-indicator').classList.add('hidden');  
+            addMessage("ai", responses[Math.floor(Math.random() * responses.length)]);  
+        }, 1500);  
+    }  
+
+    function initChart() {  
+        const ctx = document.getElementById('mainChart').getContext('2d');  
+        if (window.myChart) window.myChart.destroy();  
+        const grad = ctx.createLinearGradient(0, 0, 0, 300);  
+        grad.addColorStop(0, 'rgba(6, 182, 212, 0.4)');  
+        grad.addColorStop(1, 'rgba(6, 182, 212, 0)');  
+        window.myChart = new Chart(ctx, {  
+            type: 'line',  
+            data: {  
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],  
+                datasets: [{ label: 'Wealth', data: [5000, 7500, 6200, 8900, 10500, 12450], borderColor: '#06b6d4', backgroundColor: grad, fill: true, tension: 0.4 }]  
+            },  
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x
+
+: { grid: { display: false } } } }
+});
 }
-
-ReactDOM.render(<App/>, document.getElementById('root'));
 </script>
-</body>
-</html>
+
+</body> </html>
