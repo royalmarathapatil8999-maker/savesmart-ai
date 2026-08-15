@@ -1,6 +1,6 @@
 {
   "name": "Save Smart AI",
-  "short_name": "SaveSmart",
+  "short_name": "Save_Smart",
   "description": "Save Smart AI is an AI-powered personal finance assistant to help users save money, track expenses, and reduce financial stress.",
   "start_url": "/",
   "display": "standalone",
